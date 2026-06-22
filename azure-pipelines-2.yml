@@ -1,0 +1,25 @@
+# HTML
+# Publish your specific static HTML file directly for deployment.
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Copy only the specific website.html file to the artifact staging directory
+- task: CopyFiles@2
+  displayName: 'Isolate website.html for deployment'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'website.html'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+# Publish the unzipped file to Azure Pipelines artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Website Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
